@@ -1,2 +1,2 @@
-Flask
-Werkzeug
+Flask==2.1.3
+Werkzeug==2.1.2
