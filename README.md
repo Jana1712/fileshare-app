@@ -71,4 +71,10 @@ File Size Too Large message :
 <img width="1244" height="759" alt="image" src="https://github.com/user-attachments/assets/1ce90a4e-30eb-4bbc-a7eb-a5edf1c9037e" />
 
 
-Thank you 
+Passionate about building full-stack Python applications
+
+If you find this project valuable or think I’d be a great fit for your team…
+
+💼 I'm open to opportunities! 🚀 If you like my project, please feel free to hire me. Let's build something great together!
+
+Thank you
