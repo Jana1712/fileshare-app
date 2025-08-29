@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FileShare | Futuristic File Transfer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap');
+    
+    :root {
+      --primary: #0cffe1;
+      --secondary: #4d5bce;
+      --accent: #ff2a6d;
+      --dark: #0c1220;
+      --darker: #070b13;
+      --light: #d0fef5;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Exo 2', sans-serif;
+      background: var(--darker);
+      color: var(--light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    
+    /* Animated background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.5;
+    }
+    
+    .bg-grid {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(12, 255, 225, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(12, 255, 225, 0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      perspective: 1000px;
+    }
+    
+    .floating-shapes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .shape {
+      position: absolute;
+      background: rgba(12, 255, 225, 0.03);
+      border: 1px solid rgba(12, 255, 225, 0.1);
+      border-radius: 10px;
+    }
+    
+    .shape:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      top: 10%;
+      left: 20%;
+      animation: float 15s ease-in-out infinite;
+    }
+    
+    .shape:nth-child(2) {
+      width: 120px;
+      height: 120px;
+      top: 60%;
+      left: 70%;
+      animation: float 18s ease-in-out infinite 2s;
+    }
+    
+    .shape:nth-child(3) {
+      width: 60px;
+      height: 60px;
+      top: 30%;
+      left: 80%;
+      animation: float 12s ease-in-out infinite 1s;
+    }
+    
+    .shape:nth-child(4) {
+      width: 100px;
+      height: 100px;
+      top: 70%;
+      left: 10%;
+      animation: float 20s ease-in-out infinite 3s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+    
+    header {
+      text-align: center;
+      padding: 40px 20px 20px;
+      position: relative;
+    }
+    
+    .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .logo-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-right: 15px;
+      text-shadow: 0 0 15px rgba(12, 255, 225, 0.7);
+    }
+    
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3.2rem;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 2px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(12, 255, 225, 0.3);
+    }
+    
+    header p {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      opacity: 0.8;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .upload-box {
+      background: rgba(7, 11, 19, 0.7);
+      backdrop-filter: blur(12px);
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 0 35px rgba(12, 255, 225, 0.15);
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid rgba(12, 255, 225, 0.1);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .upload-box::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      z-index: -1;
+      background: linear-gradient(45deg, var(--primary), transparent, var(--secondary), transparent, var(--primary));
+      background-size: 400% 400%;
+      animation: glowing-border 8s ease infinite;
+      border-radius: 20px;
+    }
+    
+    @keyframes glowing-border {
+      0% { background-position: 0% 50%; opacity: 0.3; }
+      50% { background-position: 100% 50%; opacity: 0.6; }
+      100% { background-position: 0% 50%; opacity: 0.3; }
+    }
+    
+    .upload-box h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .settings-panel {
+      background: rgba(12, 18, 30, 0.6);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      text-align: left;
+      border: 1px solid rgba(12, 255, 225, 0.1);
+    }
+    
+    .settings-panel h3 {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .settings-panel h3 i {
+      margin-right: 10px;
+    }
+    
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .settings-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .settings-label {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+    
+    .settings-input {
+      background: rgba(12, 255, 225, 0.1);
+      border: 1px solid rgba(12, 255, 225, 0.2);
+      border-radius: 6px;
+      color: var(--light);
+      padding: 6px 10px;
+      width: 80px;
+      text-align: center;
+    }
+    
+    .settings-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 5px rgba(12, 255, 225, 0.3);
+    }
+    
+    .file-input-container {
+      position: relative;
+      margin: 25px auto;
+      width: 100%;
+    }
+    
+    .file-input-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      border: 2px dashed rgba(12, 255, 225, 0.3);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .file-input-label:hover {
+      border-color: var(--primary);
+      background: rgba(12, 255, 225, 0.05);
+    }
+    
+    .file-input-label i {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+    
+    .file-input-label span {
+      font-size: 1.1rem;
+    }
+    
+    input[type="file"] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    
+    .upload-button {
+      padding: 14px 30px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: var(--darker);
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+    
+    .upload-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: 0.5s;
+    }
+    
+    .upload-button:hover::before {
+      left: 100%;
+    }
+    
+    .upload-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(12, 255, 225, 0.3);
+    }
+    
+    .update-settings-button {
+      padding: 8px 15px;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 6px;
+      background: rgba(12, 255, 225, 0.2);
+      color: var(--primary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+    
+    .update-settings-button:hover {
+      background: rgba(12, 255, 225, 0.3);
+    }
+    
+    .file-info {
+      margin-top: 15px;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+    
+    .result-box {
+      margin-top: 25px;
+      padding: 20px;
+      background: rgba(12, 255, 225, 0.08);
+      border-radius: 12px;
+      border-left: 3px solid var(--primary);
+      text-align: left;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .result-box p {
+      margin-bottom: 10px;
+    }
+    
+    .result-box a {
+      color: var(--primary);
+      font-weight: bold;
+      word-wrap: break-word;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .result-box a i {
+      margin-right: 8px;
+    }
+    
+    .result-box a:hover {
+      color: var(--light);
+      text-shadow: 0 0 8px rgba(12, 255, 225, 0.7);
+    }
+    
+    .error-msg {
+      margin-top: 15px;
+      font-weight: bold;
+      color: var(--accent);
+      padding: 10px;
+      background: rgba(255, 42, 109, 0.1);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .success-msg {
+      margin-top: 15px;
+      font-weight: bold;
+      color: var(--primary);
+      padding: 10px;
+      background: rgba(12, 255, 225, 0.1);
+      border-radius: 8px;
+      border-left: 3px solid var(--primary);
+      animation: fadeIn 0.5s ease;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-top: auto;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 600px) {
+      header {
+        padding: 30px 15px 15px;
+      }
+      
+      header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .upload-box {
+        padding: 25px;
+      }
+      
+      .file-input-label {
+        padding: 20px;
+      }
+      
+      .settings-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+      
+      .settings-input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation">
+    <div class="bg-grid"></div>
+    <div class="floating-shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+  </div>
+  
+  <header>
+    <div class="logo">
+      <i class="fas fa-share-alt logo-icon"></i>
+      <h1>FileShare</h1>
+    </div>
+    <p>Upload and share files instantly with future technology. Customize link expiration and file size limits.</p>
+  </header>
+  
+  <main>
+    <div class="upload-box">
+      <h2>Upload Your File</h2>
+      
+      <div class="settings-panel">
+        <h3><i class="fas fa-cog"></i> Upload Settings</h3>
+        <div class="settings-row">
+          <span class="settings-label">Link Expiration (minutes):</span>
+          <input type="number" class="settings-input" id="link_expiry" name="link_expiry" value="{{ max_file_size if max_file_size else 25 }}" min="1" max="1440">
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">Max File Size (MB):</span>
+          <input type="number" class="settings-input" id="max_file_size" name="max_file_size" value="{{ link_expiry if link_expiry else 15 }}" min="1" max="100">
+        </div>
+        <form method="post" id="settings-form">
+          <input type="hidden" name="link_expiry" id="hidden_link_expiry_settings">
+          <input type="hidden" name="max_file_size" id="hidden_max_file_size_settings">
+          <input type="hidden" name="update_settings" value="true">
+          <button type="submit" class="update-settings-button">
+            <i class="fas fa-save"></i> Update Settings
+          </button>
+        </form>
+      </div>
+      
+      <form method="post" enctype="multipart/form-data" id="upload-form">
+        <input type="hidden" name="link_expiry" id="hidden_link_expiry">
+        <input type="hidden" name="max_file_size" id="hidden_max_file_size">
+        
+        <div class="file-input-container">
+          <label class="file-input-label" for="file-input">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Click or drag your file here</span>
+          </label>
+          <input type="file" name="file" id="file-input" required>
+        </div>
+        
+        <button type="submit" class="upload-button">
+          <i class="fas fa-upload"></i> Upload & Generate Link
+        </button>
+      </form>
+      
+      <p class="file-info">Secure encrypted transfer | Files automatically deleted after expiration</p>
+
+      {% if error %}
+        <p class="error-msg"><i class="fas fa-exclamation-circle"></i> {{ error }}</p>
+      {% endif %}
+      
+      {% if settings_updated %}
+        <p class="success-msg"><i class="fas fa-check-circle"></i> Settings updated successfully!</p>
+      {% endif %}
+
+      {% if link %}
+        <div class="result-box">
+          <p><strong><i class="fas fa-check-circle"></i> Upload successful!</strong></p>
+          <p>This link will expire in {{ link_expiry }} minutes:</p>
+          <p><a href="{{ link }}"><i class="fas fa-link"></i> {{ link }}</a></p>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+  
+  <footer>
+    <p>© 2025 FileShare | Advanced File Transfer Technology</p>
+  </footer>
+
+  <script>
+    // Add some interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+      const fileInput = document.getElementById('file-input');
+      const fileInputLabel = document.querySelector('.file-input-label');
+      const linkExpiryInput = document.getElementById('link_expiry');
+      const maxFileSizeInput = document.getElementById('max_file_size');
+      const hiddenLinkExpiry = document.getElementById('hidden_link_expiry');
+      const hiddenMaxFileSize = document.getElementById('hidden_max_file_size');
+      const hiddenLinkExpirySettings = document.getElementById('hidden_link_expiry_settings');
+      const hiddenMaxFileSizeSettings = document.getElementById('hidden_max_file_size_settings');
+      const uploadForm = document.getElementById('upload-form');
+      const settingsForm = document.getElementById('settings-form');
+      
+      // Update hidden inputs with current settings values
+      function updateHiddenInputs() {
+        hiddenLinkExpiry.value = linkExpiryInput.value;
+        hiddenMaxFileSize.value = maxFileSizeInput.value;
+        hiddenLinkExpirySettings.value = linkExpiryInput.value;
+        hiddenMaxFileSizeSettings.value = maxFileSizeInput.value;
+      }
+      
+      linkExpiryInput.addEventListener('change', updateHiddenInputs);
+      maxFileSizeInput.addEventListener('change', updateHiddenInputs);
+      
+      // Initialize hidden inputs
+      updateHiddenInputs();
+      
+      // Update label text when file is selected
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+          const fileSize = (this.files[0].size / (1024 * 1024)).toFixed(2);
+          fileInputLabel.innerHTML = `
+            <i class="fas fa-file"></i>
+            <span>${this.files[0].name}</span>
+            <small>(${fileSize} MB)</small>
+          `;
+        }
+      });
+      
+      // Add drag and drop functionality
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileInputLabel.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        fileInputLabel.addEventListener(eventName, highlight, false);
+      });
+      
+      ['dragleave', 'drop'].forEach(eventName => {
+        fileInputLabel.addEventListener(eventName, unhighlight, false);
+      });
+      
+      function highlight() {
+        fileInputLabel.style.borderColor = 'var(--primary)';
+        fileInputLabel.style.backgroundColor = 'rgba(12, 255, 225, 0.1)';
+      }
+      
+      function unhighlight() {
+        fileInputLabel.style.borderColor = 'rgba(12, 255, 225, 0.3)';
+        fileInputLabel.style.backgroundColor = 'transparent';
+      }
+      
+      fileInputLabel.addEventListener('drop', handleDrop, false);
+      
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+        
+        if (files && files.length > 0) {
+          const fileSize = (files[0].size / (1024 * 1024)).toFixed(2);
+          fileInputLabel.innerHTML = `
+            <i class="fas fa-file"></i>
+            <span>${files[0].name}</span>
+            <small>(${fileSize} MB)</small>
+          `;
+        }
+      }
+      
+      // Prevent settings form from interfering with file upload
+      settingsForm.addEventListener('submit', function(e) {
+        updateHiddenInputs();
+      });
+      
+      uploadForm.addEventListener('submit', function(e) {
+        updateHiddenInputs();
+      });
+    });
+  </script>
+</body>
+</html>
