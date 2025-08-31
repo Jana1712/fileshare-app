@@ -28,9 +28,9 @@ Upload & share files instantly
 
 Backend: Python, Flask
 
-Frontend: HTML, CSS, Bootstrap (optional)
+Frontend: HTML, CSS, Bootstrap
 
-Database (optional): SQLite / PostgreSQL (for tracking uploads & expiration)
+Database : SQLite / PostgreSQL (for tracking uploads & expiration)
 
 File Handling: Flask werkzeug for file uploads
 
