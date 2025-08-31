@@ -1,4 +1,4 @@
-TempFileShare – Upload & Share Files Instantly 🚀
+FileShare – Upload & Share Files Instantly 🚀
 🔹 Project Description
 
 TempFileShare is a lightweight and secure file-sharing web application built with Python Flask. It allows users to upload files and generate shareable links that automatically expire after a set time or when file size limits are reached.
